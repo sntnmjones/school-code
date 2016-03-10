@@ -1,0 +1,4 @@
+11111 popcorn $53.25 T
+65321 stuff $400.00 N
+34567 more_stuff $32.56 T
+98765 less_stuff $56.23 T
