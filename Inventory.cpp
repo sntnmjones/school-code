@@ -1,19 +1,12 @@
 #include"Inventory.h"
 
-// struct Item
-//{
-//	int upc;
-//	std::string desc;
-//	std::string cost;
-//	bool tax;
-//};
-
 Inventory::Inventory()
 {
 	inInventory = 0;
 	bufferLength = 0;
 	buffer = NULL;
 }
+
 
 
 
@@ -33,7 +26,6 @@ void Inventory::getInventory(std::string fileIn)
 		fillBuffer(inFile);
 		fillInventory(buffer, bufferLength);
 		echoToScreen();
-
 		inFile.close();
 	}
 }
@@ -71,21 +63,38 @@ int Inventory::getBufferLength(std::ifstream& inf)
 void Inventory::fillInventory(char* buff, int len)
 {
 	using namespace std;
+
 	int i = 0;
 	int upcNum = 0;
 	string itDesc = "";
 	string itPrice = "";
 	bool itTax = false;
+
 	do
 	{
 		do
 		{
-			// assign upcNum
-			if (buff[i] >= 48 && buff[i] <= 57)
+			// assign itPrice
+			if (buff[i - 1] == 32 && (buff[i] >= 48 && buff[i] <= 57))
 			{
 				string str = "";
 				while (buff[i] != 32)
 				{
+					str += buff[i];
+					i++;
+				}
+				itPrice = str;
+			}
+			// assign upcNum
+			else if (buff[i - 1] != 32 && (buff[i] >= 48 && buff[i] <= 57))
+			{
+				string str = "";
+				while (buff[i] != 32)
+				{
+					if (buff[i] == 46)
+					{
+						break;
+					}
 					str += buff[i];
 					i++;
 				}
@@ -101,17 +110,6 @@ void Inventory::fillInventory(char* buff, int len)
 					i++;
 				}
 				itDesc = str;
-			}
-			// assign itPrice
-			else if (buff[i] == 36)
-			{
-				string str = "";
-				while (buff[i] != 32)
-				{
-					str += buff[i];
-					i++;
-				}
-				itPrice = str;
 			}
 			// assign itTax
 			else if (buff[i] == 78 || buff[i] == 84)
@@ -129,16 +127,17 @@ void Inventory::fillInventory(char* buff, int len)
 			i++;
 		} while (buff[i] != 10 && i < len || buff[i + 1] == -51);
 
+		// assigns extracted values to struct
 		newItem.upc = upcNum;
 		newItem.desc = itDesc;
 		newItem.cost = itPrice;
 		newItem.tax = itTax;
 
+		
 		bool moreToSearch;
 		int location = 0;
-
 		moreToSearch = (location < inInventory);
-
+		//sorts items according to upc, descending
 		while (moreToSearch)
 		{
 			switch (newItem.upc < inventory[location].upc)
@@ -203,46 +202,34 @@ void Inventory::echoToScreen()
 		z++;
 	}
 	cout << endl;
+	outFile << endl << endl << endl << "From Cashier:" << endl << "UPC   Quantity" << endl;
 }
 
 bool Inventory::upcToStringArray(std::string str)
 {
 	using namespace std;
 	string upcString = "";
-	string userInputStr = "";
+	string userInputStr = str;
 	int i = 0;
 	int upcTemp = 0;
-	ostringstream convert;
 	bool match = false;
 
 	do
 	{
+		upcTemp = 0;
+		upcString = "";
 		upcTemp = inventory[i].upc; // takes the upc int and stores in int upcTemp
-		convert << upcTemp; // stores int into ostringstream object
-		upcString = convert.str(); // converts int to string
+		upcString = to_string(upcTemp);// converts int to string for comparison to user input
 		i++;
 	} while (i < inInventory && upcString != userInputStr);
 
 	if (upcString == userInputStr)
 	{
-		return match;
+		return match = true;
 	}
 	else
 	{
-		return !match;
+		return match = false;;
 	}
 }
 
-//void Inventory::emptyInventory()
-//{
-//	Item* tempPtr;
-//	int i = 0;
-//	while (newItem != NULL)
-//	{
-//		tempPtr = newItem;
-//		newItem = inventory[i].next;
-//		delete tempPtr;
-//		i++;
-//	}
-//	delete[] inventory;
-//}

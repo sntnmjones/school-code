@@ -1,0 +1,21 @@
+Items in inventory:
+99999     nachos               80.00     true
+98765     soda                  1.00     false
+54321     slurpee             100.00     false
+12345     candy                60.00     true
+11111     popcorn              53.25     true
+
+
+
+From Cashier:
+UPC   Quantity
+54321 2
+
+Customer's Items
+slurpee       2 @ 100.00            200  N
+
+Subtotal:                 200
+Tax:                        0
+
+Total:                    200
+
